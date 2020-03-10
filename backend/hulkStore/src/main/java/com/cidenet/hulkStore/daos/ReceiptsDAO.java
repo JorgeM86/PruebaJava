@@ -13,6 +13,6 @@ public interface ReceiptsDAO extends JpaRepository<ReceiptsDTO, Integer> {
 
 	@Modifying
 	@Query("update ProductsDTO p set p.quantity = p.quantity - ?1 where p.product_id = ?2")
-	void updateProductQuantity(Integer quantity, Integer id);
+	public int updateProductQuantity(Integer quantity, Integer id);
 	
 }

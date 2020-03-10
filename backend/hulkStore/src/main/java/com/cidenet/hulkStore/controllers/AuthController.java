@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @CrossOrigin
 @RestController
 public class AuthController {
-
+	
 	@Autowired
 	private UsersDAO repository;
 	
