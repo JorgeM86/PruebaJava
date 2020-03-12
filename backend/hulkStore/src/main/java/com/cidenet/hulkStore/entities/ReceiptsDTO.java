@@ -58,6 +58,14 @@ public class ReceiptsDTO implements Serializable {
 	public ReceiptsDTO() {
 		super();
 	}
+	
+	public ReceiptsDTO(double total_price, int total_quantity, int product_fk, int user_fk) {
+		super();
+		this.total_price = total_price;
+		this.total_quantity = total_quantity;
+		this.product_fk = product_fk;
+		this.user_fk = user_fk;
+	}
 
 	public ReceiptsDTO(double total_price, int total_quantity, int product_fk, int user_fk, Date date) {
 		super();

@@ -1,4 +1,4 @@
-package com.cidenet.hulkStore.daos;
+package com.cidenet.hulkStore.junit_daos;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,20 +8,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.cidenet.hulkStore.entities.TypesDTO;;
+import com.cidenet.hulkStore.entities.TypesDTO;
+import com.cidenet.hulkStore.services.TypesServices;;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
+@RunWith(SpringRunner.class)
+@ComponentScan(basePackages = "com.cidenet.hulkStore")
 class TypesDAOTest {
 
 	@Autowired
-	private TypesDAO repository;
+	private TypesServices repository;
 	
 	@Test
 	public void findAllTypes() {
-		List<TypesDTO> allTypesDTO = repository.findAll();
+		List<TypesDTO> allTypesDTO = repository.getAllTypes();
 		assertNotNull(allTypesDTO);
 	}
 

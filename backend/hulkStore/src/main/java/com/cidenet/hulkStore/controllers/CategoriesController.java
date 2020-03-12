@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cidenet.hulkStore.Response;
-import com.cidenet.hulkStore.daos.CategoriesDAO;;
+import com.cidenet.hulkStore.services.CategoriesServices;
 
 @CrossOrigin
 @RestController
 public class CategoriesController {
 
 	@Autowired
-	private CategoriesDAO repository;
+	private CategoriesServices services;
 	
 	@GetMapping(path = "/api/categories/all")
 	public ResponseEntity<Response> findAll() {
 		Response response = new Response();
 		try {
-			response.setData(repository.findAll());
+			response.setData(services.getAllCategories());
 			response.setStatus("success");
 		} catch (Exception e) {
 			response.setStatus("failure");

@@ -9,21 +9,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cidenet.hulkStore.Response;
-import com.cidenet.hulkStore.daos.UsersDAO;
+import com.cidenet.hulkStore.services.UsersServices;
 
 @CrossOrigin
 @RestController
 public class UserController {
 	
 	@Autowired
-	private UsersDAO repository;
+	private UsersServices services;
 	
 	@GetMapping(path = "/api/user/{id}")
 	public ResponseEntity<Response> getUserByID(@PathVariable("id") int id) {
 		Response response = new Response();
 		try {
 			response.setStatus("success");
-			response.setData(repository.findById(id));
+			response.setData(services.getUserByID(id));
 		} catch (Exception e) {
 			response.setStatus("failure");
 			response.setMessage(e.toString());

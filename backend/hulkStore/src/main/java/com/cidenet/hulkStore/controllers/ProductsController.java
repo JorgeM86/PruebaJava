@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cidenet.hulkStore.Response;
-import com.cidenet.hulkStore.daos.ProductsDAO;
 import com.cidenet.hulkStore.entities.ProductsDTO;
+import com.cidenet.hulkStore.services.ProductsServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin
@@ -20,13 +20,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ProductsController {
 	
 	@Autowired
-	private ProductsDAO repository;
+	private ProductsServices services;
 	
 	@GetMapping(path = "/api/products/all")
 	public ResponseEntity<Response> findAll() {
 		Response response = new Response();
 		try {
-			response.setData(repository.findAll());
+			response.setData(services.getAllProducts());
 			response.setStatus("success");
 		} catch (Exception e) {
 			response.setStatus("failure");
@@ -40,7 +40,7 @@ public class ProductsController {
 		Response response = new Response();
 		try {
 			ProductsDTO productsDTO = new ObjectMapper().readValue(productJson, ProductsDTO.class);
-			Object obj = repository.save(productsDTO);
+			Object obj = services.saveProduct(productsDTO);
 			if (obj != null) {
 				response.setData(obj);
 				response.setStatus("success");
@@ -58,7 +58,7 @@ public class ProductsController {
 	public ResponseEntity<Response> deleteDelete(@RequestParam("product_info") Integer id) {
 		Response response = new Response();
 		try {
-			repository.deleteById(id);
+			services.deleteProduct(id);
 			response.setStatus("success");
 		} catch (Exception e) {
 			response.setStatus("failure");

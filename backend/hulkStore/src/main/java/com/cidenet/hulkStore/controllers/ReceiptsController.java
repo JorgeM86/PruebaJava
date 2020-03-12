@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cidenet.hulkStore.Response;
-import com.cidenet.hulkStore.daos.ReceiptsDAO;
 import com.cidenet.hulkStore.entities.ReceiptsDTO;
+import com.cidenet.hulkStore.services.ReceiptsServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin
@@ -20,13 +20,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ReceiptsController {
 
 	@Autowired
-	private ReceiptsDAO repository;
+	private ReceiptsServices services;
 	
 	@GetMapping(path = "/api/receipts/all")
 	public ResponseEntity<Response> findAll() {
 		Response response = new Response();
 		try {
-			response.setData(repository.findAll());
+			response.setData(services.getAllReceipts());
 			response.setStatus("success");
 		} catch (Exception e) {
 			response.setStatus("failure");
@@ -40,9 +40,9 @@ public class ReceiptsController {
 		Response response = new Response();
 		try {
 			ReceiptsDTO receiptsDTO = new ObjectMapper().readValue(receiptJson, ReceiptsDTO.class);
-			Object obj = repository.save(receiptsDTO);
+			Object obj = services.saveReceipt(receiptsDTO);
 			if (obj != null) {
-				repository.updateProductQuantity(receiptsDTO.getTotal_quantity(), receiptsDTO.getProduct_fk());
+				services.updateProduct(receiptsDTO.getTotal_quantity(), receiptsDTO.getProduct_fk());
 				response.setData(obj);
 				response.setStatus("success");
 			} else {
@@ -60,7 +60,7 @@ public class ReceiptsController {
 	public ResponseEntity<Response> deleteReceipt(@RequestParam("product_info") Integer id) {
 		Response response = new Response();
 		try {
-			repository.deleteById(id);
+			services.deleteReceipt(id);
 			response.setStatus("success");
 		} catch (Exception e) {
 			response.setStatus("failure");

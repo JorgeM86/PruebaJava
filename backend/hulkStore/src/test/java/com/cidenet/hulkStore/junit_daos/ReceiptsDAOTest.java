@@ -1,4 +1,4 @@
-package com.cidenet.hulkStore.daos;
+package com.cidenet.hulkStore.junit_daos;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,27 +9,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.cidenet.hulkStore.entities.ReceiptsDTO;
+import com.cidenet.hulkStore.services.ReceiptsServices;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
+@RunWith(SpringRunner.class)
+@ComponentScan(basePackages = "com.cidenet.hulkStore")
 class ReceiptsDAOTest {
 	
 	@Autowired
-	private ReceiptsDAO repository;
+	private ReceiptsServices repository;
 
 	@Test
 	public void findAllReceipts() {
-		List<ReceiptsDTO> allReceipts = repository.findAll();
+		List<ReceiptsDTO> allReceipts = repository.getAllReceipts();
 		assertNotNull(allReceipts);
 	}
 	
 	@Test
 	public void findReceiptByID() {
 		//El recibo con ID 1000 es proporcionado por el archivo dataTest.sql en src/test/resources
-		ReceiptsDTO dbReceiptDTO = repository.findById(1000).orElse(null);
+		ReceiptsDTO dbReceiptDTO = repository.getReceiptByID(1000);
 		assertNotNull(dbReceiptDTO);
 	}
 	
@@ -42,7 +45,7 @@ class ReceiptsDAOTest {
 		receiptDTO.setProduct_fk(2000);
 		receiptDTO.setUser_fk(1000);
 		receiptDTO.setDate(new Date());
-		assertNotNull(repository.save(receiptDTO));
+		assertNotNull(repository.saveReceipt(receiptDTO));
 	}
 	
 	@Test
@@ -54,7 +57,7 @@ class ReceiptsDAOTest {
 		receiptDTO.setProduct_fk(2000);
 		receiptDTO.setUser_fk(1000);
 		receiptDTO.setDate(new Date());
-		repository.save(receiptDTO);
+		repository.saveReceipt(receiptDTO);
 		
 		//Update total_price and total_quantity
 		//New total_price 60000
@@ -63,7 +66,7 @@ class ReceiptsDAOTest {
 		receiptDTO.setTotal_quantity(3);
 		
 		//Cuando la ID no existe usa persist, cuando existe usa merge
-		ReceiptsDTO dbreceiptDTO = repository.save(receiptDTO);
+		ReceiptsDTO dbreceiptDTO = repository.saveReceipt(receiptDTO);
 		
 		assertTrue(dbreceiptDTO.getTotal_price()== 60000.0 && dbreceiptDTO.getTotal_quantity() == 3);
 		
@@ -79,23 +82,22 @@ class ReceiptsDAOTest {
 		receiptDTO.setProduct_fk(2000);
 		receiptDTO.setUser_fk(1000);
 		receiptDTO.setDate(new Date());
-		repository.save(receiptDTO);
+		repository.saveReceipt(receiptDTO);
 		
 		//Al crear el recibo se debe de restar la cantidad comprada al producto, retorna 1 indicando que si
 		//cambio algo en la bse de datos
-		assertTrue(repository.updateProductQuantity(receiptDTO.getTotal_quantity(), 2000) > 0);
+		assertTrue(repository.updateProduct(receiptDTO.getTotal_quantity(), 2000) > 0);
 	}
 	
 	@Test
 	public void deleteReceipt() {
 		//Encuentra el recibo en la base de datos proporcionado por el archivo dataTest.sql en src/test/resources
-		ReceiptsDTO receiptDTO1 = repository.findById(1000).orElse(null);
+		ReceiptsDTO receiptDTO1 = repository.getReceiptByID(1000);
 		assertNotNull(receiptDTO1);
 		
-		repository.deleteById(1000);
-		ReceiptsDTO receiptDTO2 = repository.findById(1000).orElse(null);
+		repository.deleteReceipt(1000);
+		ReceiptsDTO receiptDTO2 = repository.getReceiptByID(1000);
 		assertNull(receiptDTO2);
-		
 	}
 
 }
